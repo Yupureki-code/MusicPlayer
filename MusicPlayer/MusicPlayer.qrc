@@ -1,4 +1,29 @@
 <RCC>
-    <qresource prefix="MusicPlayer">
+    <qresource prefix="/image">
+        <file>image/cloud.png</file>
+        <file>image/favorite.png</file>
+        <file>image/favorited.png</file>
+        <file>image/find.png</file>
+        <file>image/like.png</file>
+        <file>image/liked.png</file>
+        <file>image/local.png</file>
+        <file>image/musicHall.png</file>
+        <file>image/podcast.png</file>
+        <file>image/recent.png</file>
+        <file>image/setting.png</file>
+        <file>image/quit.png</file>
+        <file>image/min.png</file>
+        <file>image/max.png</file>
+        <file>image/skin.png</file>
+        <file>image/profile.png</file>
+        <file>image/logo.png</file>
+        <file>image/forward.png</file>
+        <file>image/back.png</file>
+        <file>image/stop.png</file>
+        <file>image/lastSong.png</file>
+        <file>image/nextSong.png</file>
+        <file>image/play.png</file>
+        <file>image/songVolume.png</file>
+        <file>image/songList.png</file>
     </qresource>
 </RCC>
