@@ -422,7 +422,7 @@ padding-left: 17px;</string>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">background-color: rgb(255, 170, 255);</string>
+         <string notr="true"/>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_6">
          <property name="spacing">
@@ -1023,7 +1023,7 @@ background: transparent;</string>
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">background-color: rgb(85, 170, 127);</string>
+            <string notr="true"/>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_9">
             <property name="spacing">
@@ -1044,29 +1044,311 @@ background: transparent;</string>
             <item>
              <widget class="QStackedWidget" name="mainPlayBody">
               <property name="styleSheet">
-               <string notr="true">background-color: rgb(170, 170, 255);</string>
+               <string notr="true"/>
               </property>
               <property name="currentIndex">
                <number>0</number>
               </property>
               <widget class="QWidget" name="recommendPage">
-               <widget class="QLabel" name="label">
-                <property name="geometry">
-                 <rect>
-                  <x>340</x>
-                  <y>210</y>
-                  <width>63</width>
-                  <height>16</height>
-                 </rect>
+               <layout class="QVBoxLayout" name="verticalLayout_14">
+                <property name="spacing">
+                 <number>0</number>
                 </property>
-                <property name="text">
-                 <string>1</string>
+                <property name="leftMargin">
+                 <number>0</number>
                 </property>
-               </widget>
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <property name="rightMargin">
+                 <number>0</number>
+                </property>
+                <property name="bottomMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QScrollArea" name="recommendBody">
+                  <property name="styleSheet">
+                   <string notr="true"/>
+                  </property>
+                  <property name="verticalScrollBarPolicy">
+                   <enum>Qt::ScrollBarPolicy::ScrollBarAlwaysOn</enum>
+                  </property>
+                  <property name="widgetResizable">
+                   <bool>true</bool>
+                  </property>
+                  <widget class="QWidget" name="scrollAreaWidgetContents">
+                   <property name="geometry">
+                    <rect>
+                     <x>0</x>
+                     <y>0</y>
+                     <width>806</width>
+                     <height>540</height>
+                    </rect>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QWidget
+{
+	
+	color: rgb(0, 0, 0);
+	background-color: #F7F9FC;
+}</string>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_15">
+                    <item>
+                     <widget class="QWidget" name="recommendTitle" native="true">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>80</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>80</height>
+                       </size>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_16">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QLabel" name="label">
+                         <property name="font">
+                          <font>
+                           <family>钉钉进步体</family>
+                           <pointsize>16</pointsize>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>个性推荐</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <spacer name="horizontalSpacer_12">
+                         <property name="orientation">
+                          <enum>Qt::Orientation::Horizontal</enum>
+                         </property>
+                         <property name="sizeHint" stdset="0">
+                          <size>
+                           <width>40</width>
+                           <height>20</height>
+                          </size>
+                         </property>
+                        </spacer>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="DynamicCard" name="recommendAdvertise" native="true">
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(85, 170, 127);</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QWidget" name="recommendPage1" native="true">
+                      <property name="styleSheet">
+                       <string notr="true"/>
+                      </property>
+                      <layout class="QVBoxLayout" name="verticalLayout_16">
+                       <property name="spacing">
+                        <number>0</number>
+                       </property>
+                       <property name="leftMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="topMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="rightMargin">
+                        <number>0</number>
+                       </property>
+                       <property name="bottomMargin">
+                        <number>0</number>
+                       </property>
+                       <item>
+                        <widget class="QWidget" name="recommendSongTtitle1" native="true">
+                         <property name="minimumSize">
+                          <size>
+                           <width>16</width>
+                           <height>80</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>80</height>
+                          </size>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true"/>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_17">
+                          <property name="spacing">
+                           <number>0</number>
+                          </property>
+                          <property name="leftMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                          <item>
+                           <widget class="QWidget" name="recommendSongList" native="true">
+                            <property name="maximumSize">
+                             <size>
+                              <width>150</width>
+                              <height>16777215</height>
+                             </size>
+                            </property>
+                            <property name="styleSheet">
+                             <string notr="true"/>
+                            </property>
+                            <layout class="QHBoxLayout" name="horizontalLayout_21">
+                             <property name="leftMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="topMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="rightMargin">
+                              <number>0</number>
+                             </property>
+                             <property name="bottomMargin">
+                              <number>0</number>
+                             </property>
+                             <item>
+                              <widget class="QLabel" name="recommendSongListText">
+                               <property name="font">
+                                <font>
+                                 <pointsize>16</pointsize>
+                                </font>
+                               </property>
+                               <property name="text">
+                                <string>推荐歌单</string>
+                               </property>
+                              </widget>
+                             </item>
+                             <item>
+                              <widget class="QLabel" name="recommendSongListIcon">
+                               <property name="sizePolicy">
+                                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                                 <horstretch>0</horstretch>
+                                 <verstretch>0</verstretch>
+                                </sizepolicy>
+                               </property>
+                               <property name="minimumSize">
+                                <size>
+                                 <width>24</width>
+                                 <height>24</height>
+                                </size>
+                               </property>
+                               <property name="maximumSize">
+                                <size>
+                                 <width>24</width>
+                                 <height>24</height>
+                                </size>
+                               </property>
+                               <property name="styleSheet">
+                                <string notr="true">border-image: url(:/image/image/right.png);</string>
+                               </property>
+                               <property name="text">
+                                <string/>
+                               </property>
+                              </widget>
+                             </item>
+                            </layout>
+                           </widget>
+                          </item>
+                          <item>
+                           <spacer name="horizontalSpacer_13">
+                            <property name="orientation">
+                             <enum>Qt::Orientation::Horizontal</enum>
+                            </property>
+                            <property name="sizeHint" stdset="0">
+                             <size>
+                              <width>40</width>
+                              <height>20</height>
+                             </size>
+                            </property>
+                           </spacer>
+                          </item>
+                         </layout>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="Carousel" name="recommendSongContent1" native="true">
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>190</height>
+                          </size>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true"/>
+                         </property>
+                         <layout class="QHBoxLayout" name="horizontalLayout_22">
+                          <property name="spacing">
+                           <number>0</number>
+                          </property>
+                          <property name="leftMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="topMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="rightMargin">
+                           <number>0</number>
+                          </property>
+                          <property name="bottomMargin">
+                           <number>0</number>
+                          </property>
+                         </layout>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </widget>
+                </item>
+               </layout>
               </widget>
               <widget class="QWidget" name="podcastPage"/>
               <widget class="QWidget" name="musichallPage"/>
-              <widget class="QWidget" name="likePage"/>
+              <widget class="QWidget" name="likePage">
+               <layout class="QVBoxLayout" name="verticalLayout_17">
+                <item>
+                 <widget class="Playlist" name="likeMusic" native="true"/>
+                </item>
+               </layout>
+              </widget>
               <widget class="QWidget" name="localPage"/>
               <widget class="QWidget" name="recentPage"/>
               <widget class="QWidget" name="mypodcastPage"/>
@@ -1375,37 +1657,61 @@ border:none;</string>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Orientation::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
+                <widget class="QLabel" name="label_2">
+                 <property name="minimumSize">
                   <size>
-                   <width>167</width>
-                   <height>19</height>
+                   <width>46</width>
+                   <height>0</height>
                   </size>
                  </property>
-                </spacer>
-               </item>
-               <item>
-                <widget class="QProgressBar" name="progressBar">
-                 <property name="value">
-                  <number>24</number>
+                 <property name="maximumSize">
+                  <size>
+                   <width>46</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>00:00</string>
                  </property>
                 </widget>
                </item>
                <item>
-                <spacer name="horizontalSpacer_5">
+                <widget class="QSlider" name="horizontalSlider">
+                 <property name="minimumSize">
+                  <size>
+                   <width>350</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>350</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="orientation">
                   <enum>Qt::Orientation::Horizontal</enum>
                  </property>
-                 <property name="sizeHint" stdset="0">
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_3">
+                 <property name="minimumSize">
                   <size>
-                   <width>167</width>
-                   <height>19</height>
+                   <width>46</width>
+                   <height>0</height>
                   </size>
                  </property>
-                </spacer>
+                 <property name="maximumSize">
+                  <size>
+                   <width>46</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="text">
+                  <string>00:00</string>
+                 </property>
+                </widget>
                </item>
               </layout>
              </widget>
@@ -1483,7 +1789,7 @@ border:none;</string>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="songVolume">
+             <widget class="VolumeButton" name="songVolume">
               <property name="minimumSize">
                <size>
                 <width>24</width>
@@ -1552,6 +1858,29 @@ border:none;</string>
    <extends>QWidget</extends>
    <header location="global">Navigatebt.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Carousel</class>
+   <extends>QWidget</extends>
+   <header>Carousel.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DynamicCard</class>
+   <extends>QWidget</extends>
+   <header>Dynamiccard.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Playlist</class>
+   <extends>QWidget</extends>
+   <header>Playlist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>VolumeButton</class>
+   <extends>QPushButton</extends>
+   <header>Volumebutton.h</header>
   </customwidget>
  </customwidgets>
  <resources>

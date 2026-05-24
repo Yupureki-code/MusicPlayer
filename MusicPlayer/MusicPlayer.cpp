@@ -1,5 +1,51 @@
 ﻿#include "stdafx.h"
 #include "MusicPlayer.h"
+#include "Carousel.h"
+#include "Playlist.h"
+
+void MusicPlayer::InitCarousels()
+{
+    Carousel* c1 = ui.recommendSongContent1;
+    std::vector<SongPage> v;
+    v.push_back({ QPixmap(":/image/image/testImage1.jpg"),QString("test1") });
+    v.push_back({ QPixmap(":/image/image/testImage1.jpg"),QString("test1") });
+    v.push_back({ QPixmap(":/image/image/testImage1.jpg"),QString("test1") });
+    v.push_back({ QPixmap(":/image/image/testImage1.jpg"),QString("test1") });
+    v.push_back({ QPixmap(":/image/image/testImage1.jpg"),QString("test1") });
+    v.push_back({ QPixmap(":/image/image/testImage1.jpg"),QString("test1") });
+
+    c1->setPages(v);
+
+    // 初始化广告轮播卡片（DynamicCard）
+    if (ui.recommendAdvertise) {
+        std::vector<AdCard> ads;
+        for (int i = 0; i < 6; ++i) {
+            ads.push_back({ QPixmap(":/image/image/testImage1.jpg"), QString("ad%1").arg(i) });
+        }
+        ui.recommendAdvertise->setCards(ads);
+    }
+}
+
+void MusicPlayer::InitPlayLists()
+{
+    std::vector<SongListInfo> v;
+    v.push_back(SongListInfo(QString("1"), QString("1"), QString("1"), QString("1"), QTime(1, 1, 1)));
+    v.push_back(SongListInfo(QString("2"), QString("2"), QString("2"), QString("2"), QTime(1, 1, 1)));
+    v.push_back(SongListInfo(QString("3"), QString("3"), QString("3"), QString("3"), QTime(1, 1, 1)));
+    v.push_back(SongListInfo(QString("4"), QString("4"), QString("4"), QString("4"), QTime(1, 1, 1)));
+    v.push_back(SongListInfo(QString("5"), QString("5"), QString("5"), QString("5"), QTime(1, 1, 1)));
+    v[0].is_VIP = true;
+    v[1].is_SQ = true;
+    v[2].is_HiRes = true;
+    v[3].is_VIP = true; v[3].is_HiRes = true;
+    v[4].is_VIP = true; v[4].is_HiRes = true; v[4].is_SQ = true; v[4].has_MV = true;
+    ui.likeMusic->setSongList(v);
+}
+
+void MusicPlayer::InitPlayList()
+{
+    ui.likeMusic->setPlaylist(PlaylistInfo(QPixmap(":/image/image/testImage1.jpg"), QString("我喜欢的音乐"), QString("user1"), QDate(2026, 5, 23)));
+}
 
 MusicPlayer::MusicPlayer(QWidget *parent)
     : QWidget(parent)
@@ -7,6 +53,15 @@ MusicPlayer::MusicPlayer(QWidget *parent)
     InitConfig();
     ui.setupUi(this);
     InitUi();
+    InitCarousels();
+    InitPlayList();
+    InitPlayLists();
+    audio->setParent(this);
+    SongStruct song;
+    song.url = QUrl::fromLocalFile("E:/C C++ Files/MusicPlayer/MusicPlayer/song/test.mp3");
+    song.song_name = "知我";
+    song.songer = "国风堂/哦漏";
+    AudioEngine::GetInstance()->setSong(song);
 }
 
 void MusicPlayer::InitUi()
@@ -93,6 +148,25 @@ void MusicPlayer::on_maximize_clicked()
     }
 }
 
+void MusicPlayer::on_play_clicked()
+{
+    if (audio->isPlaying())
+    {
+        ui.play->setStyleSheet(QString("image: url(:/image/image/play.png);border:none;"));
+        audio->pause();
+    }
+    else
+    {
+        ui.play->setStyleSheet(QString("image: url(:/image/image/stop.png);border:none;"));
+        audio->play();
+    }
+}
+
+void MusicPlayer::on_song_changed(const SongStruct& song)
+{
+
+}
+
 void MusicPlayer::InitConfig()
 {
     // 初始化图片路径
@@ -102,6 +176,7 @@ void MusicPlayer::InitConfig()
     _images["myPodcast"] = ":/image/image/podcast.png";
     _images["podcast"] = ":/image/image/podcast.png";
     _images["favorite"] = ":/image/image/favorite.png";
+    _images["recommendSongContent1Page1Image"] = ":/image/image/testImage1.jpg";
 
     //初始化页面下标
     _pages["recommend"] = 0;
@@ -117,6 +192,11 @@ void MusicPlayer::InitConfig()
 QString MusicPlayer::FindNavigateBTImages(NavigateBT* bt)
 {
     return _images[bt->objectName()];
+}
+
+QString MusicPlayer::FindImages(QString name)
+{
+    return _images[name];
 }
 
 void MusicPlayer::SetCurrentPageIndex(const QString& page)

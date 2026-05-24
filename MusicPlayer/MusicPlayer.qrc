@@ -25,5 +25,8 @@
         <file>image/play.png</file>
         <file>image/songVolume.png</file>
         <file>image/songList.png</file>
+        <file>image/right.png</file>
+        <file>image/testImage1.jpg</file>
+        <file>image/left.png</file>
     </qresource>
 </RCC>
