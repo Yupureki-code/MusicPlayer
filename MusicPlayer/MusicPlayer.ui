@@ -1378,7 +1378,7 @@ background: transparent;</string>
         <property name="styleSheet">
          <string notr="true">background-color: rgb(255, 255, 255);
 color: rgb(0, 0, 0);
-border-top: 1px solid black;</string>
+</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
          <property name="spacing">
@@ -1535,8 +1535,12 @@ border-top: 1px solid black;</string>
                    <height>18</height>
                   </size>
                  </property>
+                 <property name="styleSheet">
+                  <string notr="true">image: url(:/image/image/seq.png);
+border:none;</string>
+                 </property>
                  <property name="text">
-                  <string>O</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -1657,7 +1661,7 @@ border:none;</string>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_10">
                <item>
-                <widget class="QLabel" name="label_2">
+                <widget class="QLabel" name="songCurrentTime">
                  <property name="minimumSize">
                   <size>
                    <width>46</width>
@@ -1676,7 +1680,7 @@ border:none;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QSlider" name="horizontalSlider">
+                <widget class="QSlider" name="songBar">
                  <property name="minimumSize">
                   <size>
                    <width>350</width>
@@ -1695,7 +1699,7 @@ border:none;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QLabel" name="label_3">
+                <widget class="QLabel" name="songTotalTime">
                  <property name="minimumSize">
                   <size>
                    <width>46</width>

@@ -1,5 +1,7 @@
 ﻿#include "stdafx.h"
 #include "AudioEngine.h"
+#include "MusicPlayer.h"
+#include <QRandomGenerator>
 
 AudioEngine* AudioEngine::_inst = nullptr;
 
@@ -31,15 +33,20 @@ AudioEngine::~AudioEngine()
 	stop();
 }
 
-void AudioEngine::setSong(const SongStruct& song)
+void AudioEngine::setSongList(const std::vector<SongStruct>& list)
 {
-	if (_song.url == song.url) return;
-	_song.url = song.url;
-	_song.image = song.image;
-	_song.song_name = song.song_name;
-	_song.songer = song.songer;
-	_player->stop();
-	_player->setSource(song.url);
+	_song_list = list;
+	_current_song_index = 0;
+}
+
+void AudioEngine::setCurrentSongIndex(int x)
+{
+	_current_song_index = x;
+}
+
+void AudioEngine::setPlayMode(PlayMode mode)
+{
+	_play_mode = mode;
 }
 
 void AudioEngine::setVolume(float volume)
@@ -52,12 +59,15 @@ void AudioEngine::setVolume(float volume)
 
 void AudioEngine::seek(qint64 positionMs)
 {
+	if (_player->isSeekable())
+		_player->setPosition(positionMs);
 }
 
 void AudioEngine::play()
 {
-	if (_song.url.isEmpty()) return;
+	if (_current_song_index < _song_list.size() && _song_list[_current_song_index].url.isEmpty()) return;
 	_is_playing = true;
+	_player->setSource(_song_list[_current_song_index].url);
 	_player->play();
 }
 
@@ -68,14 +78,16 @@ bool AudioEngine::isPlaying()
 
 void AudioEngine::pause()
 {
-	if (_song.url.isEmpty()) return;
+	if (_song_list.empty() || _current_song_index >= (int)_song_list.size()) return;
+	if (_song_list[_current_song_index].url.isEmpty()) return;
 	_is_playing = false;
 	_player->pause();
 }
 
 void AudioEngine::stop()
 {
-	if (_song.url.isEmpty()) return;
+	if (_song_list.empty() || _current_song_index >= (int)_song_list.size()) return;
+	if (_song_list[_current_song_index].url.isEmpty()) return;
 	_is_playing = false;
 	_player->stop();
 }
@@ -84,16 +96,32 @@ void AudioEngine::onMediaStatusChanged(QMediaPlayer::MediaStatus status)
 {
 	if (status == QMediaPlayer::MediaStatus::EndOfMedia)
 	{
-		
+		if (_song_list.empty()) return;
+		if (_play_mode == PlayMode::Sequential && _current_song_index < _song_list.size() - 1)
+		{
+			_current_song_index++;
+			play();
+		}
+		else if (_play_mode == PlayMode::Loop)
+		{
+			_current_song_index = (_current_song_index + 1) % _song_list.size();
+			play();
+		}
+		else if (_play_mode == PlayMode::SingleLoop)
+		{
+			play();
+		}
+		else if (_play_mode == PlayMode::Random)
+		{
+			_current_song_index = QRandomGenerator::global()->bounded(_song_list.size());
+			play();
+		}
 	}
 }
 
 void AudioEngine::durationChanged(qint64 durationMs)
 {
-	_song.time = durationMs;
-	_parent->on_song_changed(_song);
-}
-void AudioEngine::positionChanged(qint64 positionMs)
-{
-
+	if (_song_list.empty() || _current_song_index >= (int)_song_list.size()) return;
+	_song_list[_current_song_index].time = durationMs;
+	emit songChanged(_song_list[_current_song_index]);
 }

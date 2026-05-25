@@ -47,8 +47,25 @@ void MusicPlayer::InitPlayList()
     ui.likeMusic->setPlaylist(PlaylistInfo(QPixmap(":/image/image/testImage1.jpg"), QString("我喜欢的音乐"), QString("user1"), QDate(2026, 5, 23)));
 }
 
+void MusicPlayer::InitAudio()
+{
+    AudioEngine::GetInstance()->setParent(this);
+    connect(AudioEngine::GetInstance(), &AudioEngine::songChanged,
+        this, &MusicPlayer::on_song_changed);
+    connect(AudioEngine::GetInstance(), &AudioEngine::positionChanged,
+        this, &MusicPlayer::on_song_playing);
+    std::vector<SongStruct> list;
+    SongStruct song;
+    song.url = QUrl::fromLocalFile("E:/C C++ Files/MusicPlayer/MusicPlayer/song/test.mp3");
+    song.song_name = "知我";
+    song.songer = "国风堂/哦漏";
+    list.push_back(song);
+    audio->setSongList(list);
+    audio->setPlayMode(PlayMode::Sequential);
+}
+
 MusicPlayer::MusicPlayer(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent),_is_seeking(false)
 {
     InitConfig();
     ui.setupUi(this);
@@ -56,12 +73,7 @@ MusicPlayer::MusicPlayer(QWidget *parent)
     InitCarousels();
     InitPlayList();
     InitPlayLists();
-    audio->setParent(this);
-    SongStruct song;
-    song.url = QUrl::fromLocalFile("E:/C C++ Files/MusicPlayer/MusicPlayer/song/test.mp3");
-    song.song_name = "知我";
-    song.songer = "国风堂/哦漏";
-    AudioEngine::GetInstance()->setSong(song);
+    InitAudio();
 }
 
 void MusicPlayer::InitUi()
@@ -86,6 +98,9 @@ void MusicPlayer::InitUi()
     connect(searchAction, &QAction::triggered, this, []() {
         qDebug() << "搜索图标被点击";
         });
+    // 音量滑块（QSlider 用 sliderPressed/sliderReleased，不能靠自动连接命名）
+    connect(ui.songBar, &QSlider::sliderPressed, this, &MusicPlayer::on_songBar_pressed);
+    connect(ui.songBar, &QSlider::sliderReleased, this, &MusicPlayer::on_songBar_released);
     // NavigateBT 图标已在其构造函数内自初始化
     // 设置初始选中按钮（与 QStackedWidget 第 0 页对应）
     if (ui.recommend) {
@@ -164,7 +179,70 @@ void MusicPlayer::on_play_clicked()
 
 void MusicPlayer::on_song_changed(const SongStruct& song)
 {
+    ui.songName->setText(song.song_name);
+    ui.songerName->setText(song.songer);
+    QTime t = QTime::fromMSecsSinceStartOfDay(static_cast<int>(song.time));
+    ui.songTotalTime->setText(QString::number(t.minute()) + ":" + QString::number(t.second()));
+    ui.songBar->setRange(0, song.time);
+}
 
+void MusicPlayer::on_song_playing(qint64 positionMs)
+{
+    if (!_is_seeking)
+        ui.songBar->setValue(static_cast<int>(positionMs));
+    QTime t = QTime::fromMSecsSinceStartOfDay(static_cast<int>(positionMs));
+    QString m = QString::number(t.minute());
+    QString s = QString::number(t.second());
+    if (t.minute() < 10)
+        m = QString("0") + m;
+    if (t.second() < 10)
+        s = QString("0") + s;
+    ui.songCurrentTime->setText(m + QString(":") + s);
+}
+
+void MusicPlayer::on_songBar_released()
+{
+    int positionMs = ui.songBar->value();
+    QTime t = QTime::fromMSecsSinceStartOfDay(static_cast<int>(positionMs));
+    QString m = QString::number(t.minute());
+    QString s = QString::number(t.second());
+    if (t.minute() < 10)
+        m = QString("0") + m;
+    if (t.second() < 10)
+        s = QString("0") + s;
+    ui.songCurrentTime->setText(m + QString(":") + s);
+    AudioEngine::GetInstance()->seek(positionMs);
+    _is_seeking = false;
+}
+
+void MusicPlayer::on_songBar_pressed()
+{
+    _is_seeking = true;
+}
+
+void MusicPlayer::on_songPlay_clicked()
+{
+    PlayMode mode = audio->getPlayMode();
+    if (mode == PlayMode::Sequential)
+    {
+        ui.songPlay->setStyleSheet("image: url(:/image/image/loop.png);border:none; ");
+        audio->setPlayMode(PlayMode::Loop);
+    }
+    else if (mode == PlayMode::Loop)
+    {
+        ui.songPlay->setStyleSheet("image: url(:/image/image/singleLoop.png);border:none; ");
+        audio->setPlayMode(PlayMode::SingleLoop);
+    }
+    else if (mode == PlayMode::SingleLoop)
+    {
+        ui.songPlay->setStyleSheet("image: url(:/image/image/random.png);border:none; ");
+        audio->setPlayMode(PlayMode::Random);
+    }
+    else
+    {
+        ui.songPlay->setStyleSheet("image: url(:/image/image/seq.png);border:none; ");
+        audio->setPlayMode(PlayMode::Sequential);
+    }
 }
 
 void MusicPlayer::InitConfig()

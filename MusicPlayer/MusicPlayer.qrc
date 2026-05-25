@@ -28,5 +28,9 @@
         <file>image/right.png</file>
         <file>image/testImage1.jpg</file>
         <file>image/left.png</file>
+        <file>image/seq.png</file>
+        <file>image/random.png</file>
+        <file>image/loop.png</file>
+        <file>image/singleLoop.png</file>
     </qresource>
 </RCC>

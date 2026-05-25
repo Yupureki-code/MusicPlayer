@@ -271,6 +271,11 @@ void DynamicCard::onSlideFinished()
     _slotFarRight->setGeometry(geometryForSlot(+2));
     _slotFarRight->hide();
 
+    // 中间三张只做 pixmap 刷新，加边界保护防止意外越界
+    if (_currentIndex < 1 || _currentIndex >= (int)_cards.size() - 1) {
+        qDebug() << "onSlideFinished: _currentIndex" << _currentIndex << "out of range, cards.size=" << _cards.size();
+        _currentIndex = 1;
+    }
     _slotLeft  ->setPixmap(_cards[_currentIndex - 1].image);
     _slotCenter->setPixmap(_cards[_currentIndex].image);
     _slotRight ->setPixmap(_cards[_currentIndex + 1].image);

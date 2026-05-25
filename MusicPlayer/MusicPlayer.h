@@ -17,6 +17,7 @@ private:
     void InitCarousels();
     void InitPlayLists();
     void InitPlayList();
+    void InitAudio();
 public:
     MusicPlayer(QWidget *parent = nullptr);
     ~MusicPlayer();
@@ -34,12 +35,16 @@ public slots:
     void on_maximize_clicked();
     void on_play_clicked();
     void on_song_changed(const SongStruct& song);
-
+    void on_song_playing(qint64 positionMs);
+    void on_songBar_released();
+    void on_songBar_pressed();
+    void on_songPlay_clicked();
 private:
     Ui::MusicPlayerClass ui;
     std::unordered_map<QString, QString> _images;
     std::unordered_map<QString, int> _pages;
     int _current_page_index = 0;
+    bool _is_seeking;
     NavigateBT* _currentSelectedBt = nullptr;
 };
 
