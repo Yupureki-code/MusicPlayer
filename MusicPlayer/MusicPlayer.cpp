@@ -2,6 +2,7 @@
 #include "MusicPlayer.h"
 #include "Carousel.h"
 #include "Playlist.h"
+#include "BackgroundBlur.h"
 
 void MusicPlayer::InitCarousels()
 {
@@ -59,9 +60,38 @@ void MusicPlayer::InitAudio()
     song.url = QUrl::fromLocalFile("E:/C C++ Files/MusicPlayer/MusicPlayer/song/test.mp3");
     song.song_name = "知我";
     song.songer = "国风堂/哦漏";
+    song.image = QPixmap("E:/C C++ Files/MusicPlayer/MusicPlayer/song/testImage.jpg");
     list.push_back(song);
     audio->setSongList(list);
     audio->setPlayMode(PlayMode::Sequential);
+}
+
+void MusicPlayer::InitDetailPage()
+{
+    _detailPage = new DetailPage(this);
+    _detailPage->hide();
+    _detailPage->setGeometry(0, 0, width(), height());
+
+    _lyricsWidget = new LyricsWidget(_detailPage);
+    _lyricsWidget->setGeometry(350, 80, width() - 400, height() - 180);
+
+    connect(_detailPage, &DetailPage::backClicked, this, &MusicPlayer::closeDetailPage);
+    connect(_detailPage, &DetailPage::playClicked, this, &MusicPlayer::on_play_clicked);
+
+    connect(AudioEngine::GetInstance(), &AudioEngine::positionChanged,
+        _lyricsWidget, &LyricsWidget::updatePosition);
+
+    ui.songImage->installEventFilter(this);
+}
+
+bool MusicPlayer::eventFilter(QObject* obj, QEvent* event)
+{
+    if (obj == ui.songImage && event->type() == QEvent::MouseButtonPress)
+    {
+        openDetailPage();
+        return true;
+    }
+    return QWidget::eventFilter(obj, event);
 }
 
 MusicPlayer::MusicPlayer(QWidget *parent)
@@ -74,6 +104,7 @@ MusicPlayer::MusicPlayer(QWidget *parent)
     InitPlayList();
     InitPlayLists();
     InitAudio();
+    InitDetailPage();
 }
 
 void MusicPlayer::InitUi()
@@ -148,6 +179,19 @@ void MusicPlayer::paintEvent(QPaintEvent* event)
     QWidget::paintEvent(event);
 }
 
+void MusicPlayer::resizeEvent(QResizeEvent* event)
+{
+    QWidget::resizeEvent(event);
+    if (_detailPage)
+    {
+        _detailPage->setGeometry(0, 0, width(), height());
+    }
+    if (_lyricsWidget)
+    {
+        _lyricsWidget->setGeometry(350, 80, width() - 400, height() - 180);
+    }
+}
+
 void MusicPlayer::on_minimize_clicked()
 {
     showMinimized();
@@ -184,6 +228,31 @@ void MusicPlayer::on_song_changed(const SongStruct& song)
     QTime t = QTime::fromMSecsSinceStartOfDay(static_cast<int>(song.time));
     ui.songTotalTime->setText(QString::number(t.minute()) + ":" + QString::number(t.second()));
     ui.songBar->setRange(0, song.time);
+
+    if (!song.image.isNull())
+    {
+        QPixmap scaledImage = song.image.scaled(ui.songImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QLabel* imageLabel = ui.songImage->findChild<QLabel*>("songImageLabel");
+        if (!imageLabel)
+        {
+            imageLabel = new QLabel(ui.songImage);
+            imageLabel->setObjectName("songImageLabel");
+            imageLabel->setGeometry(0, 0, ui.songImage->width(), ui.songImage->height());
+        }
+        imageLabel->setPixmap(scaledImage);
+
+        if (_detailPage)
+        {
+            _detailPage->setCoverImage(song.image);
+            _detailPage->setSongInfo(song.song_name, song.songer, "");
+        }
+    }
+
+    if (_lyricsWidget)
+    {
+        QString lrcPath = "E:/C C++ Files/MusicPlayer/MusicPlayer/song/testLrc.lrc";
+        _lyricsWidget->loadLyrics(lrcPath);
+    }
 }
 
 void MusicPlayer::on_song_playing(qint64 positionMs)
@@ -299,6 +368,95 @@ void MusicPlayer::SelectNavigateBT(NavigateBT* bt)
 void MusicPlayer::on_quit_clicked()
 {
     close();
+}
+
+void MusicPlayer::openDetailPage()
+{
+    if (_is_detail_open || _is_animating)
+        return;
+
+    _is_animating = true;
+    _is_detail_open = true;
+
+    QPixmap blurredBg = BackgroundBlur::captureAndBlur(this, 20);
+    _detailPage->setBackground(blurredBg);
+
+    _detailPage->setGeometry(0, 0, width(), height());
+    _detailPage->show();
+    _detailPage->raise();
+
+    QPropertyAnimation* menuAnim = new QPropertyAnimation(ui.menuBox, "pos");
+    menuAnim->setDuration(500);
+    menuAnim->setStartValue(ui.menuBox->pos());
+    menuAnim->setEndValue(QPoint(ui.menuBox->x(), -ui.menuBox->height()));
+    menuAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+    QPropertyAnimation* bodyAnim = new QPropertyAnimation(ui.body, "pos");
+    bodyAnim->setDuration(500);
+    bodyAnim->setStartValue(ui.body->pos());
+    bodyAnim->setEndValue(QPoint(ui.body->x(), -ui.body->height()));
+    bodyAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+    QPropertyAnimation* detailAnim = new QPropertyAnimation(_detailPage, "pos");
+    detailAnim->setDuration(500);
+    detailAnim->setStartValue(QPoint(0, height()));
+    detailAnim->setEndValue(QPoint(0, 0));
+    detailAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+    _openAnimGroup = new QParallelAnimationGroup(this);
+    _openAnimGroup->addAnimation(menuAnim);
+    _openAnimGroup->addAnimation(bodyAnim);
+    _openAnimGroup->addAnimation(detailAnim);
+
+    connect(_openAnimGroup, &QParallelAnimationGroup::finished, this, [this]() {
+        _is_animating = false;
+        ui.menuBox->hide();
+        ui.body->hide();
+    });
+
+    _openAnimGroup->start(QAbstractAnimation::DeleteWhenStopped);
+}
+
+void MusicPlayer::closeDetailPage()
+{
+    if (!_is_detail_open || _is_animating)
+        return;
+
+    _is_animating = true;
+
+    ui.menuBox->show();
+    ui.body->show();
+
+    QPropertyAnimation* menuAnim = new QPropertyAnimation(ui.menuBox, "pos");
+    menuAnim->setDuration(500);
+    menuAnim->setStartValue(ui.menuBox->pos());
+    menuAnim->setEndValue(QPoint(ui.menuBox->x(), 0));
+    menuAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+    QPropertyAnimation* bodyAnim = new QPropertyAnimation(ui.body, "pos");
+    bodyAnim->setDuration(500);
+    bodyAnim->setStartValue(ui.body->pos());
+    bodyAnim->setEndValue(QPoint(ui.body->x(), ui.menuBox->height()));
+    bodyAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+    QPropertyAnimation* detailAnim = new QPropertyAnimation(_detailPage, "pos");
+    detailAnim->setDuration(500);
+    detailAnim->setStartValue(_detailPage->pos());
+    detailAnim->setEndValue(QPoint(0, height()));
+    detailAnim->setEasingCurve(QEasingCurve::OutCubic);
+
+    QParallelAnimationGroup* closeAnimGroup = new QParallelAnimationGroup(this);
+    closeAnimGroup->addAnimation(menuAnim);
+    closeAnimGroup->addAnimation(bodyAnim);
+    closeAnimGroup->addAnimation(detailAnim);
+
+    connect(closeAnimGroup, &QParallelAnimationGroup::finished, this, [this]() {
+        _is_animating = false;
+        _is_detail_open = false;
+        _detailPage->hide();
+    });
+
+    closeAnimGroup->start(QAbstractAnimation::DeleteWhenStopped);
 }
 
 MusicPlayer::~MusicPlayer()

@@ -6,7 +6,11 @@
 #include "NavigateBT.h"
 #include "DynamicCard.h"
 #include "AudioEngine.h"
+#include "DetailPage.h"
+#include "LyricsWidget.h"
 #include <qdebug.h>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 
 class MusicPlayer : public QWidget
 {
@@ -18,6 +22,7 @@ private:
     void InitPlayLists();
     void InitPlayList();
     void InitAudio();
+    void InitDetailPage();
 public:
     MusicPlayer(QWidget *parent = nullptr);
     ~MusicPlayer();
@@ -25,8 +30,12 @@ public:
     QString FindImages(QString name);
     void SetCurrentPageIndex(const QString& page);
     void SelectNavigateBT(NavigateBT* bt);
+    void openDetailPage();
+    void closeDetailPage();
 protected:
     void paintEvent(QPaintEvent* event);
+    void resizeEvent(QResizeEvent* event) override;
+    bool eventFilter(QObject* obj, QEvent* event) override;
 signals:
     void songChanged(const SongStruct& song);
 public slots:
@@ -46,5 +55,10 @@ private:
     int _current_page_index = 0;
     bool _is_seeking;
     NavigateBT* _currentSelectedBt = nullptr;
+    DetailPage* _detailPage = nullptr;
+    LyricsWidget* _lyricsWidget = nullptr;
+    QParallelAnimationGroup* _openAnimGroup = nullptr;
+    bool _is_detail_open = false;
+    bool _is_animating = false;
 };
 

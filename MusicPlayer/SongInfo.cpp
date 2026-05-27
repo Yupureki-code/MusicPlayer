@@ -13,7 +13,13 @@ void SongInfo::setInfo(const SongListInfo& info)
 	ui.title->setText(info.title);
 	ui.songer->setText(info.songer);
 	ui.album->setText(info.album);
-	ui.time->setText(QString::number(info.time.minute()) + QString(":") + QString::number(info.time.second()));
+	QString m = QString::number(info.time.minute());
+	QString s = QString::number(info.time.second());
+	if (info.time.minute() < 10)
+		m = QString("0") + m;
+	if (info.time.second() < 10)
+		s = QString("0") + s;
+	ui.time->setText(m + QString(":") + s);
 	QHBoxLayout* layout = qobject_cast<QHBoxLayout*>(ui.label->layout());
 	if (info.is_VIP)
 	{
