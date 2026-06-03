@@ -67,7 +67,11 @@ void AudioEngine::play()
 {
 	if (_current_song_index < _song_list.size() && _song_list[_current_song_index].url.isEmpty()) return;
 	_is_playing = true;
-	_player->setSource(_song_list[_current_song_index].url);
+	if (_is_first_play)
+	{
+		_player->setSource(_song_list[_current_song_index].url);
+		_is_first_play = false;
+	}
 	_player->play();
 }
 

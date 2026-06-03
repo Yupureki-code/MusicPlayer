@@ -22,6 +22,7 @@ private:
 	// [毛玻璃效果 - 为后续皮肤切换保留，当前未使用]
 	void captureBackground();
 	void paintEvent(QPaintEvent* event);
+	void showEvent(QShowEvent* event) override;
 	void updateLabelStyle();
 	void enterEvent(QEnterEvent* event);
 	void leaveEvent(QEvent* event);

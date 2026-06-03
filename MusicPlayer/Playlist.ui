@@ -29,8 +29,7 @@
        </rect>
       </property>
       <property name="styleSheet">
-       <string notr="true">background-color: #F7F9FC;
-color: rgb(0, 0, 0);</string>
+       <string notr="true">color: rgb(255, 255, 255);</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
@@ -237,34 +236,136 @@ border-radius: 8px; </string>
                 <item>
                  <widget class="QWidget" name="songOption" native="true">
                   <property name="styleSheet">
-                   <string notr="true"/>
+                   <string notr="true">QPushButton
+{
+	border-radius: 18px; 
+}</string>
                   </property>
                   <layout class="QHBoxLayout" name="horizontalLayout_4">
+                   <property name="spacing">
+                    <number>10</number>
+                   </property>
+                   <property name="leftMargin">
+                    <number>9</number>
+                   </property>
+                   <property name="topMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="rightMargin">
+                    <number>0</number>
+                   </property>
+                   <property name="bottomMargin">
+                    <number>0</number>
+                   </property>
                    <item>
                     <widget class="QPushButton" name="playAll">
+                     <property name="minimumSize">
+                      <size>
+                       <width>100</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>100</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">background-color: #ED4A4A;
+padding-left:16px;
+padding-right:16px;</string>
+                     </property>
                      <property name="text">
                       <string>播放全部</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="MusicPlayer.qrc">
+                       <normaloff>:/image/image/play.png</normaloff>:/image/image/play.png</iconset>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="favoriteAll">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">border:1px solid #491F20;
+padding-left:12px;
+padding-right:12px;</string>
+                     </property>
                      <property name="text">
                       <string>收藏</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="MusicPlayer.qrc">
+                       <normaloff>:/image/image/favorite.png</normaloff>:/image/image/favorite.png</iconset>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="shallAll">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">border:1px solid #491F20;
+padding-left:12px;
+padding-right:12px;</string>
+                     </property>
                      <property name="text">
                       <string>分享</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="MusicPlayer.qrc">
+                       <normaloff>:/image/image/share.png</normaloff>:/image/image/share.png</iconset>
                      </property>
                     </widget>
                    </item>
                    <item>
                     <widget class="QPushButton" name="downloadAll">
+                     <property name="minimumSize">
+                      <size>
+                       <width>0</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="maximumSize">
+                      <size>
+                       <width>16777215</width>
+                       <height>36</height>
+                      </size>
+                     </property>
+                     <property name="styleSheet">
+                      <string notr="true">border:1px solid #491F20;
+padding-left:12px;
+padding-right:12px;</string>
+                     </property>
                      <property name="text">
-                      <string>下载</string>
+                      <string>下载全部</string>
+                     </property>
+                     <property name="icon">
+                      <iconset resource="MusicPlayer.qrc">
+                       <normaloff>:/image/image/local.png</normaloff>:/image/image/local.png</iconset>
                      </property>
                     </widget>
                    </item>
@@ -689,6 +790,8 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical {
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="MusicPlayer.qrc"/>
+ </resources>
  <connections/>
 </ui>

@@ -27,6 +27,12 @@ LyricsWidget::LyricsWidget(QWidget *parent)
 
 LyricsWidget::~LyricsWidget()
 {
+	if (_scrollAnimation)
+	{
+		_scrollAnimation->stop();
+		delete _scrollAnimation;
+		_scrollAnimation = nullptr;
+	}
 }
 
 void LyricsWidget::loadLyrics(const QString& filePath)
@@ -109,6 +115,7 @@ void LyricsWidget::scrollToLine(int lineIndex)
 	{
 		_scrollAnimation->stop();
 		delete _scrollAnimation;
+		_scrollAnimation = nullptr;
 	}
 
 	_scrollAnimation = new QPropertyAnimation(_scrollArea->verticalScrollBar(), "value");
@@ -116,5 +123,5 @@ void LyricsWidget::scrollToLine(int lineIndex)
 	_scrollAnimation->setStartValue(_scrollArea->verticalScrollBar()->value());
 	_scrollAnimation->setEndValue(targetY);
 	_scrollAnimation->setEasingCurve(QEasingCurve::OutCubic);
-	_scrollAnimation->start(QAbstractAnimation::DeleteWhenStopped);
+	_scrollAnimation->start();  // 不使用DeleteWhenStopped，手动管理
 }

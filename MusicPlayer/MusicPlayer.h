@@ -11,6 +11,7 @@
 #include <qdebug.h>
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
+#include "SongCover.h"
 
 class MusicPlayer : public QWidget
 {
@@ -60,5 +61,6 @@ private:
     QParallelAnimationGroup* _openAnimGroup = nullptr;
     bool _is_detail_open = false;
     bool _is_animating = false;
+    QPixmap _backgroundImage;
 };
 

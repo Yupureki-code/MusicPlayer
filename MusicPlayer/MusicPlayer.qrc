@@ -23,7 +23,6 @@
         <file>image/lastSong.png</file>
         <file>image/nextSong.png</file>
         <file>image/play.png</file>
-        <file>image/songVolume.png</file>
         <file>image/songList.png</file>
         <file>image/right.png</file>
         <file>image/testImage1.jpg</file>
@@ -32,5 +31,11 @@
         <file>image/random.png</file>
         <file>image/loop.png</file>
         <file>image/singleLoop.png</file>
+        <file>image/songOn.png</file>
+        <file>image/songOff.png</file>
+        <file>image/expand.png</file>
+        <file>image/share.png</file>
+        <file>image/background.mp4</file>
+        <file>image/background.jpeg</file>
     </qresource>
 </RCC>

@@ -41,9 +41,9 @@ void NavigateBT::InitStyle()
 
 void NavigateBT::InitLabelTransparent()
 {
-    // 让所有子 QLabel 背景透明，以便 NavigateBT paintEvent 绘制的背景透出来
+    // 让所有子 QLabel 背景透明，文字颜色适配暗色背景
     for (QLabel* label : findChildren<QLabel*>()) {
-        label->setStyleSheet("background: transparent; font-size: 16px;");
+        label->setStyleSheet("background: transparent; color: rgb(200, 200, 200); font-size: 16px;");
     }
 }
 
@@ -57,6 +57,7 @@ void NavigateBT::captureBackground()
     if (!p || !p->isVisible() || p->size().isEmpty())
         return;
 
+    // 使用grab()截取父控件背景
     QPixmap parentPix = p->grab();
     if (parentPix.isNull())
         return;
@@ -75,15 +76,25 @@ void NavigateBT::captureBackground()
 void NavigateBT::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);
 
-    // ---- 背景色：选中用更深灰，悬停/按下用淡灰 ----
-    if (m_selected) {
-        painter.fillRect(rect(), QColor(224, 224, 224));   // #E0E0E0 选中深灰
-    } else if (m_blurRadius > 0) {
-        painter.fillRect(rect(), QColor(240, 240, 240));   // #F0F0F0 悬停淡灰
+    // 圆角矩形路径
+    QPainterPath path;
+    int radius = 8;
+    path.addRoundedRect(rect(), radius, radius);
+
+    // 裁剪为圆角
+    painter.setClipPath(path);
+
+    // 绘制背景
+    if (m_selected && !m_bgPressed.isNull()) {
+        painter.drawPixmap(0, 0, m_bgPressed);
+        painter.fillRect(rect(), QColor(255, 255, 255, 60));
+    } else if (m_blurRadius > 0 && !m_bgHover.isNull()) {
+        painter.drawPixmap(0, 0, m_bgHover);
+        painter.fillRect(rect(), QColor(255, 255, 255, 30));
     }
 
-    // 必须调用基类，否则子控件（QLabel 等）不会被绘制
     QWidget::paintEvent(event);
 }
 
@@ -93,14 +104,27 @@ void NavigateBT::updateLabelStyle()
     auto label = findChild<QLabel*>(name);
     if (!label)
         return;
-    bool active = m_selected || (m_blurRadius > 0);
 
     QFont f = label->font();
-    f.setBold(active);
-    label->setFont(f);
+    QColor color;
 
+    if (m_selected) {
+        // 选中状态：白色加粗
+        color = QColor(255, 255, 255);
+        f.setBold(true);
+    } else if (m_blurRadius > 0) {
+        // 悬停状态：白色加粗
+        color = QColor(255, 255, 255);
+        f.setBold(true);
+    } else {
+        // 正常状态：浅灰色普通（适配暗色背景）
+        color = QColor(200, 200, 200);
+        f.setBold(false);
+    }
+
+    label->setFont(f);
     QPalette pal = label->palette();
-    pal.setColor(QPalette::WindowText, active ? QColor("#111111") : QColor("#555555"));
+    pal.setColor(QPalette::WindowText, color);
     label->setPalette(pal);
 }
 
@@ -170,6 +194,15 @@ NavigateBT::NavigateBT(QWidget* parent)
     // 延迟初始化：等 MusicPlayer 完全构造、子控件树建立完毕后再执行
     QMetaObject::invokeMethod(this, &NavigateBT::InitIcon, Qt::QueuedConnection);
     QMetaObject::invokeMethod(this, &NavigateBT::InitLabelTransparent, Qt::QueuedConnection);
+}
+
+void NavigateBT::showEvent(QShowEvent* event)
+{
+    QWidget::showEvent(event);
+    // 首次显示时延迟捕获背景，避免在paintEvent中grab导致无限递归
+    if (!m_bgCached) {
+        QTimer::singleShot(0, this, [this]() { captureBackground(); });
+    }
 }
 
 // [毛玻璃效果 - 为后续皮肤切换保留，当前未使用]

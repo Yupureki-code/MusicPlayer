@@ -69,6 +69,7 @@ private:
 	QAudioOutput* _audioOutput;
 	MusicPlayer* _parent;
 	bool _is_playing = false;
+	bool _is_first_play = true;
 	PlayMode _play_mode;
 	std::vector<SongStruct> _song_list;
 	int _current_song_index = 0;

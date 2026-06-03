@@ -81,12 +81,11 @@ void MusicPlayer::InitDetailPage()
     connect(AudioEngine::GetInstance(), &AudioEngine::positionChanged,
         _lyricsWidget, &LyricsWidget::updatePosition);
 
-    ui.songImage->installEventFilter(this);
 }
 
 bool MusicPlayer::eventFilter(QObject* obj, QEvent* event)
 {
-    if (obj == ui.songImage && event->type() == QEvent::MouseButtonPress)
+    if (obj == ui.songImageBox && event->type() == QEvent::MouseButtonPress)
     {
         openDetailPage();
         return true;
@@ -116,8 +115,10 @@ void MusicPlayer::InitUi()
 
     // 移除原来给阴影预留的 9px margin，由 paintEvent 统一绘制阴影和背景
     ui.verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-    // background 设为透明，由 MusicPlayer::paintEvent 统一画白色背景和阴影
+    // background 设为透明，背景图由paintEvent绘制
     ui.background->setStyleSheet("background: transparent;");
+    // 加载背景图片
+    _backgroundImage.load(":/image/image/background.jpeg");
 
     // 设置搜索栏图标
     QLineEdit* lineEdit = ui.searchLine;
@@ -171,10 +172,16 @@ void MusicPlayer::paintEvent(QPaintEvent* event)
         painter.drawRect(shadow);
     }
 
-    // ---- 绘制白色内容背景（占据左上角，留出右下阴影） ----
+    // ---- 绘制背景图片（占据左上角，留出右下阴影） ----
     QRect content = r.adjusted(0, 0, -offX, -offY);
-    painter.setBrush(Qt::white);
-    painter.drawRect(content);
+    if (!_backgroundImage.isNull()) {
+        // 拉伸图片填满内容区域
+        QPixmap scaled = _backgroundImage.scaled(content.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+        painter.drawPixmap(content.topLeft(), scaled);
+    } else {
+        painter.setBrush(Qt::white);
+        painter.drawRect(content);
+    }
 
     QWidget::paintEvent(event);
 }
@@ -228,26 +235,18 @@ void MusicPlayer::on_song_changed(const SongStruct& song)
     QTime t = QTime::fromMSecsSinceStartOfDay(static_cast<int>(song.time));
     ui.songTotalTime->setText(QString::number(t.minute()) + ":" + QString::number(t.second()));
     ui.songBar->setRange(0, song.time);
-
     if (!song.image.isNull())
     {
-        QPixmap scaledImage = song.image.scaled(ui.songImage->size(), Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        QLabel* imageLabel = ui.songImage->findChild<QLabel*>("songImageLabel");
-        if (!imageLabel)
-        {
-            imageLabel = new QLabel(ui.songImage);
-            imageLabel->setObjectName("songImageLabel");
-            imageLabel->setGeometry(0, 0, ui.songImage->width(), ui.songImage->height());
-        }
-        imageLabel->setPixmap(scaledImage);
-
+        // 使用固定大小确保图片正确显示
+        QSize imageSize(60, 60);
+        QPixmap scaledImage = song.image.scaled(imageSize, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        ui.songImageBox->setPixmap(scaledImage);
         if (_detailPage)
         {
             _detailPage->setCoverImage(song.image);
             _detailPage->setSongInfo(song.song_name, song.songer, "");
         }
     }
-
     if (_lyricsWidget)
     {
         QString lrcPath = "E:/C C++ Files/MusicPlayer/MusicPlayer/song/testLrc.lrc";
@@ -256,7 +255,7 @@ void MusicPlayer::on_song_changed(const SongStruct& song)
 }
 
 void MusicPlayer::on_song_playing(qint64 positionMs)
-{
+{   
     if (!_is_seeking)
         ui.songBar->setValue(static_cast<int>(positionMs));
     QTime t = QTime::fromMSecsSinceStartOfDay(static_cast<int>(positionMs));
