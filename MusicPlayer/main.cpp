@@ -4,10 +4,23 @@
 #include <QMediaPlayer>
 #include <QVideoWidget>
 #include <QVBoxLayout>
+#include <QFont>
+#include <QFontDatabase>
 
 int main(int argc, char *argv[])
 {
+    // 高DPI支持
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+
     QApplication app(argc, argv);
+
+    // 设置默认字体 - 使用系统中渲染效果最好的中文字体
+    QFont defaultFont;
+    defaultFont.setPointSize(10);
+    defaultFont.setHintingPreference(QFont::PreferFullHinting);     // 完整字体提示
+    defaultFont.setStyleStrategy(QFont::PreferAntialias);          // 优先抗锯齿
+    app.setFont(defaultFont);
+
     MusicPlayer window;
     // 创建媒体播放器 和 视频部件
     QMediaPlayer* player = new QMediaPlayer;

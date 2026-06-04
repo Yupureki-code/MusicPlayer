@@ -57,6 +57,12 @@ void AudioEngine::setVolume(float volume)
 	_audioOutput->setVolume(_volume);
 }
 
+void AudioEngine::setSpeed(qreal speed)
+{
+	_speed = speed;
+	_player->setPlaybackRate(speed);
+}
+
 void AudioEngine::seek(qint64 positionMs)
 {
 	if (_player->isSeekable())

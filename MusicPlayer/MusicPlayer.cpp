@@ -115,10 +115,10 @@ void MusicPlayer::InitUi()
 
     // 移除原来给阴影预留的 9px margin，由 paintEvent 统一绘制阴影和背景
     ui.verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-    // background 设为透明，背景图由paintEvent绘制
-    ui.background->setStyleSheet("background: transparent;");
-    // 加载背景图片
-    _backgroundImage.load(":/image/image/background.jpeg");
+    //// background 设为透明，背景图由paintEvent绘制
+    //ui.background->setStyleSheet("background: transparent;");
+    //// 加载背景图片
+    //_backgroundImage.load(":/image/image/background.jpeg");
 
     // 设置搜索栏图标
     QLineEdit* lineEdit = ui.searchLine;
@@ -150,6 +150,10 @@ void MusicPlayer::InitUi()
     int y0 = ui.navigateBox->y();
     int y1 = ui.navigateBox->y() + ui.navigateBox->height();
     painter.drawLine(QLine(x0, y0, x0, y1));
+
+    //设置背景图片
+    ui.background->setStyleSheet("#background{border-image: url(:/image/image/background.jpeg) 0 0 0 0 stretch stretch;color: rgb(255, 255, 255); }");
+    //DynamicWallpaper::attach(this, ":/image/image/background.mp4");
 }
 
 void MusicPlayer::paintEvent(QPaintEvent* event)

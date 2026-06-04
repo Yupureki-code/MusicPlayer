@@ -45,6 +45,7 @@ public:
 	void setPlayMode(PlayMode mode);
 	void setVolume(float num);
 	void setParent(MusicPlayer* parent) { _parent = parent; }
+	void setSpeed(qreal speed);
 	float getVolume() const{return _volume;};
 	qint64 getDuration() const{return _player->duration();}
 	qint64 getPosition() const{return _player->position();}
@@ -74,6 +75,7 @@ private:
 	std::vector<SongStruct> _song_list;
 	int _current_song_index = 0;
 	float _volume;
+	qreal _speed;
 };
 
 #define audio AudioEngine::GetInstance()

@@ -44,24 +44,23 @@
       </sizepolicy>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/image/image/background.jpeg) 0 0 0 0 stretch stretch;
-color: rgb(255, 255, 255);</string>
+      <string notr="true"/>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>0</number>
       </property>
       <property name="leftMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="topMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="rightMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="bottomMargin">
-       <number>0</number>
+       <number>9</number>
       </property>
       <item>
        <widget class="TitleBar" name="menuBox" native="true">
@@ -498,13 +497,13 @@ padding-left: 17px;</string>
                 <number>6</number>
                </property>
                <property name="leftMargin">
-                <number>9</number>
+                <number>0</number>
                </property>
                <property name="topMargin">
                 <number>0</number>
                </property>
                <property name="rightMargin">
-                <number>9</number>
+                <number>0</number>
                </property>
                <property name="bottomMargin">
                 <number>0</number>
@@ -612,13 +611,13 @@ background: transparent;</string>
                 <number>6</number>
                </property>
                <property name="leftMargin">
-                <number>9</number>
+                <number>0</number>
                </property>
                <property name="topMargin">
                 <number>0</number>
                </property>
                <property name="rightMargin">
-                <number>9</number>
+                <number>0</number>
                </property>
                <property name="bottomMargin">
                 <number>0</number>
@@ -1081,15 +1080,15 @@ background: transparent;</string>
                     <rect>
                      <x>0</x>
                      <y>0</y>
-                     <width>808</width>
-                     <height>542</height>
+                     <width>788</width>
+                     <height>522</height>
                     </rect>
                    </property>
                    <property name="styleSheet">
                     <string notr="true">QWidget
 {
 	
-	color: rgb(0, 0, 0);
+	color: rgb(255, 255, 255);
 }</string>
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -1374,21 +1373,24 @@ background: transparent;</string>
          </size>
         </property>
         <property name="styleSheet">
-         <string notr="true">
-</string>
+         <string notr="true">#playBox
+{
+	border:1px solid rgb(255, 255, 255);
+	border-radius:12px;
+}</string>
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0">
          <property name="spacing">
           <number>0</number>
          </property>
          <property name="leftMargin">
-          <number>0</number>
+          <number>12</number>
          </property>
          <property name="topMargin">
           <number>0</number>
          </property>
          <property name="rightMargin">
-          <number>0</number>
+          <number>12</number>
          </property>
          <property name="bottomMargin">
           <number>0</number>
@@ -1430,18 +1432,21 @@ background: transparent;</string>
              <widget class="SongCover" name="songImageBox" native="true">
               <property name="minimumSize">
                <size>
-                <width>80</width>
-                <height>80</height>
+                <width>46</width>
+                <height>46</height>
                </size>
               </property>
               <property name="maximumSize">
                <size>
-                <width>80</width>
-                <height>80</height>
+                <width>46</width>
+                <height>46</height>
                </size>
               </property>
               <property name="styleSheet">
-               <string notr="true"/>
+               <string notr="true">#songImageBox
+{
+	 border-radius: 4px;
+}</string>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_23">
                <property name="spacing">
@@ -1873,7 +1878,7 @@ QSlider::handle:horizontal {
              </spacer>
             </item>
             <item>
-             <widget class="QPushButton" name="songSetting">
+             <widget class="SongSettingBT" name="songSetting">
               <property name="minimumSize">
                <size>
                 <width>24</width>
@@ -1999,6 +2004,11 @@ border:none;</string>
    <class>SongBar</class>
    <extends>QSlider</extends>
    <header>SongBar.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SongSettingBT</class>
+   <extends>QPushButton</extends>
+   <header>SongSettingBT.h</header>
   </customwidget>
  </customwidgets>
  <resources>

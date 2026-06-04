@@ -12,6 +12,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include "SongCover.h"
+#include "DynamicWallpaper.h"
 
 class MusicPlayer : public QWidget
 {
