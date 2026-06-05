@@ -46,6 +46,8 @@ public:
 	void setVolume(float num);
 	void setParent(MusicPlayer* parent) { _parent = parent; }
 	void setSpeed(qreal speed);
+	void nextSong();
+	void lastSong();
 	float getVolume() const{return _volume;};
 	qint64 getDuration() const{return _player->duration();}
 	qint64 getPosition() const{return _player->position();}

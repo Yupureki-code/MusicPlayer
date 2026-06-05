@@ -63,6 +63,21 @@ void AudioEngine::setSpeed(qreal speed)
 	_player->setPlaybackRate(speed);
 }
 
+void AudioEngine::nextSong()
+{
+	qDebug() << "next";
+	pause();
+	_current_song_index = (_current_song_index + 1) % _song_list.size();
+	play();
+}
+
+void AudioEngine::lastSong()
+{
+	pause();
+	_current_song_index = (_current_song_index - 1) % _song_list.size();
+	play();
+}
+
 void AudioEngine::seek(qint64 positionMs)
 {
 	if (_player->isSeekable())
@@ -78,6 +93,7 @@ void AudioEngine::play()
 		_player->setSource(_song_list[_current_song_index].url);
 		_is_first_play = false;
 	}
+	_player->setSource(_song_list[_current_song_index].url);
 	_player->play();
 }
 

@@ -12,7 +12,7 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 #include "SongCover.h"
-#include "DynamicWallpaper.h"
+#include "QmlWallpaperWidget.h"
 
 class MusicPlayer : public QWidget
 {
@@ -25,6 +25,7 @@ private:
     void InitPlayList();
     void InitAudio();
     void InitDetailPage();
+    void InitWallPaper();
 public:
     MusicPlayer(QWidget *parent = nullptr);
     ~MusicPlayer();
@@ -50,6 +51,8 @@ public slots:
     void on_songBar_released();
     void on_songBar_pressed();
     void on_songPlay_clicked();
+    void on_nextSong_clicked();
+    void on_lastSong_clicked();
 private:
     Ui::MusicPlayerClass ui;
     std::unordered_map<QString, QString> _images;
@@ -62,6 +65,6 @@ private:
     QParallelAnimationGroup* _openAnimGroup = nullptr;
     bool _is_detail_open = false;
     bool _is_animating = false;
-    QPixmap _backgroundImage;
+    QmlWallpaperWidget* _wallpaper;
 };
 

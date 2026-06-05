@@ -62,6 +62,10 @@ void MusicPlayer::InitAudio()
     song.songer = "国风堂/哦漏";
     song.image = QPixmap("E:/C C++ Files/MusicPlayer/MusicPlayer/song/testImage.jpg");
     list.push_back(song);
+    song.song_name = "星炬不息";
+    song.songer = "飞行雪绒";
+    song.url = QUrl::fromLocalFile("E:/C C++ Files/MusicPlayer/MusicPlayer/song/test2.mp3");
+    list.push_back(song);
     audio->setSongList(list);
     audio->setPlayMode(PlayMode::Sequential);
 }
@@ -81,6 +85,16 @@ void MusicPlayer::InitDetailPage()
     connect(AudioEngine::GetInstance(), &AudioEngine::positionChanged,
         _lyricsWidget, &LyricsWidget::updatePosition);
 
+    ui.songImageBox->installEventFilter(this);
+}
+
+void MusicPlayer::InitWallPaper()
+{
+    _wallpaper = new QmlWallpaperWidget(ui.background);
+    QString videoPath = "E:\\C C++ Files\\test\\Test\\background_1080p.mp4";
+    _wallpaper->setVideoSource(videoPath);
+    _wallpaper->lower();  // 确保在最底层
+    _wallpaper->setGeometry(ui.background->rect());
 }
 
 bool MusicPlayer::eventFilter(QObject* obj, QEvent* event)
@@ -104,6 +118,7 @@ MusicPlayer::MusicPlayer(QWidget *parent)
     InitPlayLists();
     InitAudio();
     InitDetailPage();
+    InitWallPaper();
 }
 
 void MusicPlayer::InitUi()
@@ -151,9 +166,11 @@ void MusicPlayer::InitUi()
     int y1 = ui.navigateBox->y() + ui.navigateBox->height();
     painter.drawLine(QLine(x0, y0, x0, y1));
 
-    //设置背景图片
-    ui.background->setStyleSheet("#background{border-image: url(:/image/image/background.jpeg) 0 0 0 0 stretch stretch;color: rgb(255, 255, 255); }");
-    //DynamicWallpaper::attach(this, ":/image/image/background.mp4");
+    //设置背景
+    ui.background->setStyleSheet("background: transparent;");
+
+    // 将PlayBox子控件设为白色
+    ui.playBox->initChildStyles();
 }
 
 void MusicPlayer::paintEvent(QPaintEvent* event)
@@ -162,30 +179,24 @@ void MusicPlayer::paintEvent(QPaintEvent* event)
     painter.setRenderHint(QPainter::Antialiasing);
 
     QRect r = rect();
-    const int blur  = 12;   // 阴影扩散半径
-    const int offX  = 4;    // 水平偏移
-    const int offY  = 4;    // 垂直偏移
+    const int blur  = 12;
+    const int offX  = 4;
+    const int offY  = 4;
 
-    // ---- 绘制阴影（从外到内，alpha 递增，模拟模糊） ----
+    // ---- 绘制阴影 ----
     painter.setPen(Qt::NoPen);
     for (int i = blur; i >= 1; --i) {
-        int alpha = 10 + (blur - i) * 12;   // 外层淡、内层浓
+        int alpha = 10 + (blur - i) * 12;
         alpha = qMin(alpha, 140);
         painter.setBrush(QColor(0, 0, 0, alpha));
         QRect shadow = r.adjusted(i, i, -i + offX, -i + offY);
         painter.drawRect(shadow);
     }
 
-    // ---- 绘制背景图片（占据左上角，留出右下阴影） ----
+    // ---- 内容区域透明，由QML动态壁纸显示 ----
     QRect content = r.adjusted(0, 0, -offX, -offY);
-    if (!_backgroundImage.isNull()) {
-        // 拉伸图片填满内容区域
-        QPixmap scaled = _backgroundImage.scaled(content.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-        painter.drawPixmap(content.topLeft(), scaled);
-    } else {
-        painter.setBrush(Qt::white);
-        painter.drawRect(content);
-    }
+    painter.setBrush(Qt::transparent);
+    painter.drawRect(content);
 
     QWidget::paintEvent(event);
 }
@@ -193,6 +204,10 @@ void MusicPlayer::paintEvent(QPaintEvent* event)
 void MusicPlayer::resizeEvent(QResizeEvent* event)
 {
     QWidget::resizeEvent(event);
+    if (_wallpaper)
+    {
+        _wallpaper->setGeometry(ui.background->rect());
+    }
     if (_detailPage)
     {
         _detailPage->setGeometry(0, 0, width(), height());
@@ -315,6 +330,15 @@ void MusicPlayer::on_songPlay_clicked()
         ui.songPlay->setStyleSheet("image: url(:/image/image/seq.png);border:none; ");
         audio->setPlayMode(PlayMode::Sequential);
     }
+}
+
+void MusicPlayer::on_nextSong_clicked()
+{
+    audio->nextSong();
+}
+void MusicPlayer::on_lastSong_clicked()
+{
+    audio->lastSong();
 }
 
 void MusicPlayer::InitConfig()

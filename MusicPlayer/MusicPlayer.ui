@@ -1359,7 +1359,7 @@ background: transparent;</string>
        </widget>
       </item>
       <item>
-       <widget class="QWidget" name="playBox" native="true">
+       <widget class="PlayBox" name="playBox" native="true">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -2009,6 +2009,12 @@ border:none;</string>
    <class>SongSettingBT</class>
    <extends>QPushButton</extends>
    <header>SongSettingBT.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PlayBox</class>
+   <extends>QWidget</extends>
+   <header>PlayBox.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>
