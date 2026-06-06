@@ -3,6 +3,7 @@
 #include "Carousel.h"
 #include "Playlist.h"
 #include "BackgroundBlur.h"
+#include <QFileInfo>
 
 void MusicPlayer::InitCarousels()
 {
@@ -74,8 +75,7 @@ void MusicPlayer::InitDetailPage()
 {
     _detailPage = new DetailPage(this);
     _detailPage->hide();
-    _detailPage->setGeometry(0, 0, width(), height());
-
+    _detailPage->setGeometry(0, height(), width(), height());
     _lyricsWidget = new LyricsWidget(_detailPage);
     _lyricsWidget->setGeometry(350, 80, width() - 400, height() - 180);
 
@@ -95,6 +95,34 @@ void MusicPlayer::InitWallPaper()
     _wallpaper->setVideoSource(videoPath);
     _wallpaper->lower();  // 确保在最底层
     _wallpaper->setGeometry(ui.background->rect());
+}
+
+void MusicPlayer::InitFpsDisplay()
+{
+    _fpsWidget = new QQuickWidget(this);
+    _fpsWidget->setResizeMode(QQuickWidget::SizeRootObjectToView);
+    _fpsWidget->setClearColor(Qt::transparent);
+    _fpsWidget->setAttribute(Qt::WA_TranslucentBackground);
+    _fpsWidget->setWindowFlags(Qt::FramelessWindowHint);
+
+    QString qmlPath = QCoreApplication::applicationDirPath() + "/qml/FpsOverlay.qml";
+    QFileInfo qmlFile(qmlPath);
+
+    if (!qmlFile.exists()) {
+        qmlPath = "E:/C C++ Files/MusicPlayer/MusicPlayer/qml/FpsOverlay.qml";
+        qmlFile.setFile(qmlPath);
+    }
+
+    if (qmlFile.exists()) {
+        _fpsWidget->setSource(QUrl::fromLocalFile(qmlPath));
+    } else {
+        qWarning() << "FPS QML file not found!";
+    }
+
+    _fpsWidget->setFixedSize(120, 40);
+    _fpsWidget->move(width() - 200, 10);
+    _fpsWidget->show();
+    _fpsWidget->raise();
 }
 
 bool MusicPlayer::eventFilter(QObject* obj, QEvent* event)
@@ -118,7 +146,8 @@ MusicPlayer::MusicPlayer(QWidget *parent)
     InitPlayLists();
     InitAudio();
     InitDetailPage();
-    InitWallPaper();
+    //InitWallPaper();
+    InitFpsDisplay();
 }
 
 void MusicPlayer::InitUi()
@@ -129,12 +158,6 @@ void MusicPlayer::InitUi()
     setAttribute(Qt::WA_TranslucentBackground, true);
 
     // 移除原来给阴影预留的 9px margin，由 paintEvent 统一绘制阴影和背景
-    ui.verticalLayout_3->setContentsMargins(0, 0, 0, 0);
-    //// background 设为透明，背景图由paintEvent绘制
-    //ui.background->setStyleSheet("background: transparent;");
-    //// 加载背景图片
-    //_backgroundImage.load(":/image/image/background.jpeg");
-
     // 设置搜索栏图标
     QLineEdit* lineEdit = ui.searchLine;
     lineEdit->setPlaceholderText("搜索...");
@@ -167,7 +190,7 @@ void MusicPlayer::InitUi()
     painter.drawLine(QLine(x0, y0, x0, y1));
 
     //设置背景
-    ui.background->setStyleSheet("background: transparent;");
+    ui.background->setStyleSheet("#background{background-image: url(:/image/image/background.jpeg);}");
 
     // 将PlayBox子控件设为白色
     ui.playBox->initChildStyles();
@@ -215,6 +238,10 @@ void MusicPlayer::resizeEvent(QResizeEvent* event)
     if (_lyricsWidget)
     {
         _lyricsWidget->setGeometry(350, 80, width() - 400, height() - 180);
+    }
+    if (_fpsWidget)
+    {
+        _fpsWidget->move(width() - 130, 10);
     }
 }
 
@@ -408,37 +435,28 @@ void MusicPlayer::openDetailPage()
     QPixmap blurredBg = BackgroundBlur::captureAndBlur(this, 20);
     _detailPage->setBackground(blurredBg);
 
-    _detailPage->setGeometry(0, 0, width(), height());
     _detailPage->show();
     _detailPage->raise();
 
-    QPropertyAnimation* menuAnim = new QPropertyAnimation(ui.menuBox, "pos");
-    menuAnim->setDuration(500);
-    menuAnim->setStartValue(ui.menuBox->pos());
-    menuAnim->setEndValue(QPoint(ui.menuBox->x(), -ui.menuBox->height()));
-    menuAnim->setEasingCurve(QEasingCurve::OutCubic);
-
-    QPropertyAnimation* bodyAnim = new QPropertyAnimation(ui.body, "pos");
-    bodyAnim->setDuration(500);
-    bodyAnim->setStartValue(ui.body->pos());
-    bodyAnim->setEndValue(QPoint(ui.body->x(), -ui.body->height()));
-    bodyAnim->setEasingCurve(QEasingCurve::OutCubic);
-
     QPropertyAnimation* detailAnim = new QPropertyAnimation(_detailPage, "pos");
+
+    QPropertyAnimation* bgAnim = new QPropertyAnimation(ui.background, "pos");
+    bgAnim->setDuration(500);
+    bgAnim->setStartValue(QPoint(0, 0));
+    bgAnim->setEndValue(QPoint(0, -height()));
+    bgAnim->setEasingCurve(QEasingCurve::OutCubic);
+
     detailAnim->setDuration(500);
     detailAnim->setStartValue(QPoint(0, height()));
     detailAnim->setEndValue(QPoint(0, 0));
     detailAnim->setEasingCurve(QEasingCurve::OutCubic);
 
     _openAnimGroup = new QParallelAnimationGroup(this);
-    _openAnimGroup->addAnimation(menuAnim);
-    _openAnimGroup->addAnimation(bodyAnim);
+    _openAnimGroup->addAnimation(bgAnim);
     _openAnimGroup->addAnimation(detailAnim);
 
     connect(_openAnimGroup, &QParallelAnimationGroup::finished, this, [this]() {
         _is_animating = false;
-        ui.menuBox->hide();
-        ui.body->hide();
     });
 
     _openAnimGroup->start(QAbstractAnimation::DeleteWhenStopped);
@@ -451,20 +469,11 @@ void MusicPlayer::closeDetailPage()
 
     _is_animating = true;
 
-    ui.menuBox->show();
-    ui.body->show();
-
-    QPropertyAnimation* menuAnim = new QPropertyAnimation(ui.menuBox, "pos");
-    menuAnim->setDuration(500);
-    menuAnim->setStartValue(ui.menuBox->pos());
-    menuAnim->setEndValue(QPoint(ui.menuBox->x(), 0));
-    menuAnim->setEasingCurve(QEasingCurve::OutCubic);
-
-    QPropertyAnimation* bodyAnim = new QPropertyAnimation(ui.body, "pos");
-    bodyAnim->setDuration(500);
-    bodyAnim->setStartValue(ui.body->pos());
-    bodyAnim->setEndValue(QPoint(ui.body->x(), ui.menuBox->height()));
-    bodyAnim->setEasingCurve(QEasingCurve::OutCubic);
+    QPropertyAnimation* bgAnim = new QPropertyAnimation(ui.background, "pos");
+    bgAnim->setDuration(500);
+    bgAnim->setStartValue(ui.background->pos());
+    bgAnim->setEndValue(QPoint(0, 0));
+    bgAnim->setEasingCurve(QEasingCurve::OutCubic);
 
     QPropertyAnimation* detailAnim = new QPropertyAnimation(_detailPage, "pos");
     detailAnim->setDuration(500);
@@ -473,14 +482,12 @@ void MusicPlayer::closeDetailPage()
     detailAnim->setEasingCurve(QEasingCurve::OutCubic);
 
     QParallelAnimationGroup* closeAnimGroup = new QParallelAnimationGroup(this);
-    closeAnimGroup->addAnimation(menuAnim);
-    closeAnimGroup->addAnimation(bodyAnim);
+    closeAnimGroup->addAnimation(bgAnim);
     closeAnimGroup->addAnimation(detailAnim);
 
     connect(closeAnimGroup, &QParallelAnimationGroup::finished, this, [this]() {
         _is_animating = false;
         _is_detail_open = false;
-        _detailPage->hide();
     });
 
     closeAnimGroup->start(QAbstractAnimation::DeleteWhenStopped);

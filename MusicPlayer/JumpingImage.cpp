@@ -21,7 +21,6 @@ JumpingImage::~JumpingImage()
 
 void JumpingImage::paintEvent(QPaintEvent * event)
 {
-	qDebug() << "paintEvent called:" << objectName() << width() << "X" << height();
 	QPainter painter(this);
 	if (_image.isNull()) {
 		qDebug() << "paintEvent: _image is null, nothing to draw";

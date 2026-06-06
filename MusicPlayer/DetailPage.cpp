@@ -1,4 +1,4 @@
-#include "stdafx.h"
+﻿#include "stdafx.h"
 #include "DetailPage.h"
 #include <QPainter>
 
@@ -6,6 +6,7 @@ DetailPage::DetailPage(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+	hide();
 	updateMouseStyle(MouseStyle::OutsideWindow);
 }
 
@@ -39,20 +40,14 @@ void DetailPage::updateMouseStyle(MouseStyle style)
 	{
 	case MouseStyle::OutsideWindow:
 		ui.fullscreenBtn->hide();
-		ui.lastSongBtn->hide();
-		ui.nextSongBtn->hide();
 		break;
 
 	case MouseStyle::InsideWindow:
 		ui.fullscreenBtn->show();
-		ui.lastSongBtn->show();
-		ui.nextSongBtn->show();
 		break;
 
 	case MouseStyle::BottomArea:
 		ui.fullscreenBtn->show();
-		ui.lastSongBtn->show();
-		ui.nextSongBtn->show();
 		break;
 	}
 }

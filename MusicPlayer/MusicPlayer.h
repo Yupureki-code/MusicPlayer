@@ -13,6 +13,7 @@
 #include <QParallelAnimationGroup>
 #include "SongCover.h"
 #include "QmlWallpaperWidget.h"
+#include <QQuickWidget>
 
 class MusicPlayer : public QWidget
 {
@@ -26,6 +27,7 @@ private:
     void InitAudio();
     void InitDetailPage();
     void InitWallPaper();
+    void InitFpsDisplay();
 public:
     MusicPlayer(QWidget *parent = nullptr);
     ~MusicPlayer();
@@ -66,5 +68,6 @@ private:
     bool _is_detail_open = false;
     bool _is_animating = false;
     QmlWallpaperWidget* _wallpaper;
+    QQuickWidget* _fpsWidget = nullptr;
 };
 

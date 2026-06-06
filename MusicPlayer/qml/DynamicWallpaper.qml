@@ -30,11 +30,11 @@ Item {
 
     Timer {
         id: fpsTimer
-        interval: 1000
+        interval: 500
         running: true
         repeat: true
         onTriggered: {
-            root.fps = root.frameCount
+            root.fps = root.frameCount * 2  // 0.5秒采样，乘以2得到每秒帧数
             root.frameCount = 0
             if (root.fps > 0) root.frameTime = 1000.0 / root.fps
         }
@@ -151,6 +151,33 @@ Item {
     }
     Behavior on zoomFactor {
         NumberAnimation { duration: 300; easing.type: Easing.OutCubic }
+    }
+
+    // ═══════════════════════════════════════════
+    //  帧率显示（每 0.5 秒更新）
+    // ═══════════════════════════════════════════
+
+    Rectangle {
+        id: fpsOverlay
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.margins: 10
+        width: fpsText.width + 16
+        height: fpsText.height + 10
+        radius: 4
+        color: Qt.rgba(0, 0, 0, 0.7)
+        z: 1000
+        visible: true
+
+        Text {
+            id: fpsText
+            anchors.centerIn: parent
+            text: "FPS: " + root.fps
+            color: root.fps >= 50 ? "#4caf50" : root.fps >= 30 ? "#ff9800" : "#f44336"
+            font.pixelSize: 14
+            font.bold: true
+            font.family: "Consolas"
+        }
     }
 
     Component.onCompleted: {
